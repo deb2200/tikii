@@ -115,7 +115,7 @@
       <code>chrome://flags/#enable-experimental-web-platform-features</code> → <i>Enabled</i>.</p>
     <p><b>Zgjidh një pajisje</b> hap listën e Chrome me pajisjet afër. Kur zgjedh njërën, aplikacioni lidhet me të dhe lexon emrin, baterinë dhe prodhuesin (nëse pajisja i jep).</p>
     <p>Largësia është vetëm një vlerësim nga fuqia e sinjalit – muret dhe trupi e ndryshojnë shumë.</p>
-    <p>Duhet ndezur Bluetooth-i dhe Vendndodhja (Location) në telefon.</p>
+    <p>Duhet ndezur Bluetooth-i. Në Android duhet edhe Vendndodhja (Location); në iPhone, kur pyet Bluefy, lejoja Bluetooth-in.</p>
   </details>
 </main>
 
@@ -131,18 +131,22 @@
   const canPick = !!(bt && bt.requestDevice);
   const canLive = !!(bt && bt.requestLEScan);
 
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const noLiveMsg = ios
+    ? "Në iPhone përdor butonin “Zgjidh pajisje”: hapet lista e pajisjeve afër, me sinjalin e secilës."
+    : "Skanimi i vazhdueshëm është i fikur. Hap <code>chrome://flags/#enable-experimental-web-platform-features</code>, zgjidh <b>Enabled</b> dhe rinise Chrome. Ndërkohë mund të përdorësh “Zgjidh pajisje”.";
+
   if (!bt) {
-    const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
     $("unsupported").hidden = false;
     $("unsupported").innerHTML = ios
-      ? "Safari në iPhone nuk e lejon Bluetooth-in nga faqet. Hape këtë faqe me aplikacionin falas <b>Bluefy</b> (App Store)."
+      ? "Safari në iPhone nuk e lejon Bluetooth-in. Shkarko aplikacionin falas <b>Bluefy – Web BLE Browser</b> nga App Store dhe hape këtë faqe aty."
       : "Ky shfletues nuk e mbështet Bluetooth-in. Hape me <b>Chrome</b> në Android.";
     $("btnLive").disabled = true;
     $("btnPick").disabled = true;
   } else if (!canLive) {
     $("unsupported").hidden = false;
-    $("unsupported").innerHTML =
-      "Skanimi i vazhdueshëm është i fikur. Hap <code>chrome://flags/#enable-experimental-web-platform-features</code>, zgjidh <b>Enabled</b> dhe rinise Chrome. Ndërkohë mund të përdorësh “Zgjidh një pajisje”.";
+    $("unsupported").innerHTML = noLiveMsg;
   }
 
   // ---------- Ndihmës ----------
@@ -257,7 +261,7 @@
 
   $("btnLive").addEventListener("click", () => {
     if (!canLive) {
-      setStatus("Ndiz flag-un e Chrome (shih shënimin lart), ose përdor “Zgjidh një pajisje”.");
+      setStatus(ios ? "Në iPhone përdor butonin “Zgjidh pajisje”." : "Ndiz flag-un e Chrome (shih shënimin lart), ose përdor “Zgjidh pajisje”.");
       return;
     }
     scan ? stopLive() : startLive();

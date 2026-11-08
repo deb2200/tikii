@@ -1,5 +1,5 @@
 // Service worker i skanerit: e bën aplikacionin të hapet edhe offline.
-const CACHE = "skaneri-v1";
+const CACHE = "skaneri-v2";
 const ASSETS = ["./", "index.html", "manifest.json", "icon.svg"];
 
 self.addEventListener("install", (e) => {
