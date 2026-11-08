@@ -59,3 +59,12 @@ sw.js             service worker (offline)
 manifest.json     konfigurimi i PWA-së
 icons/            ikonat
 ```
+
+## 📡 Skaneri – pajisjet afër meje
+
+Një aplikacion i dytë, i thjeshtë, te dosja `skaner/`: skanon pajisjet Bluetooth përreth (kufje, ora, telefona, TV…) dhe tregon fuqinë e sinjalit dhe largësinë e përafërt.
+
+- Hape në telefon: `https://<emri-yt>.github.io/tikii/skaner/` dhe instaloje si aplikacion (⋮ → *Add to Home screen*).
+- **Android + Chrome:** për skanimin e vazhdueshëm ndiz një herë `chrome://flags/#enable-experimental-web-platform-features` → *Enabled*. Pa këtë, punon butoni “Zgjidh pajisje” (lista e Chrome + lexon baterinë/prodhuesin kur pajisja lejon).
+- **iPhone:** Safari nuk e lejon Bluetooth-in nga faqet; përdor aplikacionin falas **Bluefy**.
+- Ndiz Bluetooth-in dhe Vendndodhjen. Faqja duhet të jetë në `https://` (GitHub Pages e ka).
