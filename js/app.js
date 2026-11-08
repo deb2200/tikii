@@ -41,13 +41,15 @@
     lastDay: null,
     hearts: MAX_HEARTS,
     heartsTs: Date.now(),
-    settings: { goal: 20, hearts: true, sound: true, tts: true },
+    settings: { goal: 20, hearts: false, sound: true, tts: true },
   });
 
   let S;
   try {
     S = Object.assign(defaultState(), JSON.parse(localStorage.getItem(STORE_KEY) || "{}"));
     S.settings = Object.assign(defaultState().settings, S.settings);
+    S.settings.hearts = false; // zemrat/energjia pa limit
+    S.hearts = MAX_HEARTS;
   } catch {
     S = defaultState();
   }
@@ -213,7 +215,9 @@
   function distractors(cid, item, field, n) {
     const multi = wordCount(item[field]) > 1;
     const seen = new Set([norm(item[field])]);
-    const pool = shuffle(flat[cid].filter((o) => o.id !== item.id));
+    const other = field === "t" ? "sq" : "t";
+    // Përjashton artikujt me të njëjtin kuptim (që të mos ketë dy përgjigje të sakta)
+    const pool = shuffle(flat[cid].filter((o) => o.id !== item.id && norm(o[other]) !== norm(item[other])));
     // Preferon të njëjtin lloj (fjalë / fjali) dhe të njëjtën njësi
     pool.sort((a, b) => {
       const sa = (wordCount(a[field]) > 1) === multi ? 0 : 2;
@@ -300,8 +304,8 @@
       <header class="topbar">
         <button class="chip" data-act="courses" title="Ndrysho kursin">${c.flag}</button>
         <div class="chip ${streak && S.lastDay === dayKey() ? "on-fire" : "muted"}" title="Seria e ditëve">🔥 ${streak}</div>
-        <div class="chip gem" title="XP sot / qëllimi ditor">⚡ ${today}/${S.settings.goal}</div>
-        <div class="chip heart ${S.settings.hearts ? "" : "muted"}" title="Zemrat">❤️ ${S.settings.hearts ? S.hearts : "∞"}</div>
+        <div class="chip gem" title="XP sot">⚡ ${today}</div>
+        <div class="chip heart" title="Zemrat pa limit">❤️ ∞</div>
       </header>`;
   }
   function navbar() {
@@ -392,7 +396,7 @@
     return `
       <div class="card">
         <h2>🎯 Praktikë</h2>
-        <p>Përsërit fjalët që ke mësuar, duke filluar me ato ku ke gabuar më shumë. Praktika nuk harxhon zemra dhe të jep <b>+1 ❤️</b>.</p>
+        <p>Përsërit fjalët që ke mësuar, duke filluar me ato ku ke gabuar më shumë. </p>
         <div class="stats-row">
           <div class="stat"><b>${learned}</b><span>fjalë të mësuara</span></div>
           <div class="stat"><b>${m}</b><span>për t'u përsëritur</span></div>
@@ -462,7 +466,6 @@
             ${goalOpt(10, "Lehtë · 10 XP")}${goalOpt(20, "Normal · 20 XP")}${goalOpt(30, "Seriozisht · 30 XP")}${goalOpt(50, "Intensiv · 50 XP")}
           </select>
         </label>
-        ${toggle("hearts", "Zemrat (humb një për çdo gabim)")}
         ${toggle("sound", "Efektet zanore")}
         ${toggle("tts", "Shqiptimi me zë")}
         <div class="btn-row">
@@ -763,7 +766,6 @@
         </div>
         ${!wasToday ? `<div class="card center streak-card">🔥 <b>${currentStreak()}</b> ${currentStreak() === 1 ? "ditë" : "ditë rresht"}${streakBefore ? "" : " — seria filloi!"}</div>` : ""}
         ${goalHit ? `<div class="card center goal-card">✅ E arrite qëllimin ditor prej ${S.settings.goal} XP!</div>` : ""}
-        ${s.kind === "practice" ? `<p class="sub">+1 ❤️</p>` : ""}
         <button class="btn primary big" data-act="home">VAZHDO</button>
       </main>`;
     save();

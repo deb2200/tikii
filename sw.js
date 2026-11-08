@@ -1,5 +1,5 @@
 // Service worker: e bën aplikacionin të funksionojë offline.
-const CACHE = "tikii-v1";
+const CACHE = "tikii-v2";
 const ASSETS = [
   "./",
   "index.html",

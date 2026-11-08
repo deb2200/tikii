@@ -4,12 +4,12 @@ Aplikacioni im personal për të mësuar gjuhë, në stilin e Duolingo-s. Ndërf
 
 ## Çfarë ka
 
-- **3 kurse:** anglisht (6 njësi), gjermanisht (3 njësi), italisht (3 njësi)
+- **4 kurse:** anglisht (6 njësi), frëngjisht (4 njësi), gjermanisht (3 njësi), italisht (3 njësi)
 - **Rruga e mësimeve:** njësi dhe mësime që hapen njëra pas tjetrës
 - **Ushtrime të ndryshme:** zgjidh përkthimin, ndërto fjalinë me fjalë, shkruaj përkthimin, dëgjo dhe shkruaj, gjej çiftet
 - **Zëri:** shqiptimi i fjalëve me zërin e shfletuesit (🔊 normal, 🐢 ngadalë)
-- **XP, seria e ditëve 🔥, qëllimi ditor dhe zemrat ❤️** (zemrat mund t'i çaktivizosh te Profili)
-- **Praktika:** përsërit fjalët ku ke gabuar më shumë, pa harxhuar zemra
+- **XP, seria e ditëve 🔥 dhe qëllimi ditor**; zemrat ❤️ janë pa limit
+- **Praktika:** përsërit fjalët ku ke gabuar më shumë
 - **Fjalori:** lista e gjithë fjalëve që ke mësuar
 - **Statistika** për javën e fundit
 - **Funksionon offline** dhe mund të instalohet në telefon (PWA)
