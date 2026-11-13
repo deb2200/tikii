@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Përkthyesi live</title>
+  <meta name="description" content="Përkthim live nga çdo gjuhë në shqip, direkt në AirPods.">
+  <meta name="theme-color" content="#b91c1c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Përkthyesi">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <style>
+    :root {
+      --bg: #f5f5f4; --card: #fff; --text: #1c1917; --muted: #78716c; --line: #e7e5e4;
+      --accent: #b91c1c; --accent-soft: #fee2e2; --ok: #15803d; --warn-bg: #fef3c7; --warn-text: #78350f;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0c0a09; --card: #1c1917; --text: #f5f5f4; --muted: #a8a29e; --line: #292524;
+        --accent: #ef4444; --accent-soft: #3b0d0d; --ok: #22c55e; --warn-bg: #3a2a07; --warn-text: #fde68a;
+      }
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      padding: calc(env(safe-area-inset-top) + 8px) 16px calc(16px + env(safe-area-inset-bottom));
+    }
+    main { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; min-height: 100%; }
+    header { display: flex; align-items: center; gap: 12px; padding: 8px 0 12px; }
+    header img { width: 40px; height: 40px; border-radius: 10px; }
+    header h1 { font-size: 20px; margin: 0; }
+    header p { margin: 0; color: var(--muted); font-size: 13px; }
+    header .gear { margin-left: auto; width: auto; padding: 10px 12px; background: var(--card); color: var(--text); border: 1px solid var(--line); }
+
+    button {
+      font: inherit; font-weight: 600; border: 0; border-radius: 14px; cursor: pointer;
+      padding: 14px 18px; width: 100%; background: var(--accent); color: #fff;
+    }
+    button.secondary { background: var(--card); color: var(--text); border: 1px solid var(--line); }
+    button:disabled { opacity: .5; cursor: default; }
+
+    .status { display: flex; align-items: center; gap: 10px; background: var(--card); border: 1px solid var(--line);
+      border-radius: 14px; padding: 10px 14px; font-size: 14px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: none; }
+    .dot.live { background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: ping 1.6s infinite; }
+    .dot.busy { background: #f59e0b; }
+    .dot.err { background: var(--accent); }
+    @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,.6); } 100% { box-shadow: 0 0 0 10px rgba(34,197,94,0); } }
+    .status .time { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .meter { height: 4px; border-radius: 4px; background: var(--line); overflow: hidden; margin-top: 8px; }
+    .meter i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .08s linear; }
+
+    #feed { flex: 1; overflow-y: auto; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; min-height: 200px; }
+    .empty { color: var(--muted); text-align: center; margin: auto; padding: 24px; font-size: 15px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; }
+    .card .src { color: var(--muted); font-size: 14px; margin-bottom: 6px; }
+    .card .src:empty::before { content: "…"; }
+    .card .sq { font-size: 19px; font-weight: 600; }
+    .card .sq:empty::before { content: "duke përkthyer…"; color: var(--muted); font-weight: 400; font-size: 15px; }
+    .card.speaking { border-color: var(--accent); background: var(--accent-soft); }
+
+    .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; position: sticky; bottom: 0; padding-top: 8px; background: var(--bg); }
+    .controls #start { grid-column: 1 / -1; padding: 18px; font-size: 18px; }
+
+    dialog { border: 0; border-radius: 20px; padding: 0; width: min(560px, calc(100% - 24px)); background: var(--card); color: var(--text); }
+    dialog::backdrop { background: rgba(0,0,0,.5); }
+    .sheet { padding: 18px; display: flex; flex-direction: column; gap: 14px; max-height: 85vh; overflow-y: auto; }
+    .sheet h2 { margin: 0; font-size: 18px; }
+    label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; }
+    label small { font-weight: 400; color: var(--muted); }
+    input, select { font: inherit; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); width: 100%; }
+    .note { background: var(--warn-bg); color: var(--warn-text); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+    .note a { color: inherit; }
+    .err-box { background: var(--accent-soft); color: var(--text); border: 1px solid var(--accent); border-radius: 12px; padding: 10px 12px; font-size: 14px; margin-top: 10px; display: none; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="icon.svg" alt="">
+    <div>
+      <h1>Përkthyesi live</h1>
+      <p>Çdo gjuhë → shqip, në AirPods</p>
+    </div>
+    <button class="gear" id="openSettings" aria-label="Cilësimet">⚙️</button>
+  </header>
+
+  <div class="status">
+    <span class="dot" id="dot"></span>
+    <span id="statusText">Gati. Lidh AirPods dhe shtyp “Fillo”.</span>
+    <span class="time" id="timer"></span>
+  </div>
+  <div class="meter"><i id="level"></i></div>
+  <div class="err-box" id="errBox"></div>
+
+  <section id="feed">
+    <div class="empty" id="empty">
+      🎧 Vendos AirPods, mbaje iPhone-in afër personit që flet dhe shtyp <b>Fillo</b>.<br><br>
+      Aplikacioni e njeh vetë gjuhën dhe ta thotë përkthimin shqip në vesh.
+    </div>
+  </section>
+
+  <div class="controls">
+    <button id="start">▶︎ Fillo përkthimin</button>
+    <button class="secondary" id="pause" disabled>⏸ Pauzë</button>
+    <button class="secondary" id="clear">🗑 Pastro</button>
+  </div>
+</main>
+
+<dialog id="settings">
+  <form method="dialog" class="sheet">
+    <h2>⚙️ Cilësimet</h2>
+
+    <label>Çelësi API i OpenAI
+      <input id="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-...">
+      <small>Ruhet vetëm në këtë telefon. Merre te platform.openai.com → API keys.</small>
+    </label>
+
+    <label>Mikrofoni
+      <select id="mic"><option value="">Mikrofoni i iPhone-it (rekomandohet)</option></select>
+      <small>Përdor mikrofonin e iPhone-it që të dëgjohet personi tjetër, jo zëri yt nga AirPods.</small>
+    </label>
+
+    <label>Shpejtësia e reagimit
+      <select id="pace">
+        <option value="250">⚡ Maksimale – përkthen pas çdo pauze të shkurtër</option>
+        <option value="400" selected>🚀 E shpejtë (rekomandohet)</option>
+        <option value="700">🎯 E saktë – pret fjali më të plota</option>
+      </select>
+    </label>
+
+    <label>Zëri
+      <select id="voice">
+        <option value="marin">Marin (femër)</option>
+        <option value="cedar">Cedar (mashkull)</option>
+        <option value="coral">Coral</option>
+        <option value="sage">Sage</option>
+        <option value="ash">Ash</option>
+        <option value="verse">Verse</option>
+        <option value="alloy">Alloy</option>
+      </select>
+    </label>
+
+    <label>Shpejtësia e zërit: <span id="speedVal">1.10×</span>
+      <input id="speed" type="range" min="0.8" max="1.5" step="0.05" value="1.1">
+    </label>
+
+    <label>Modeli
+      <input id="model" type="text" spellcheck="false" value="gpt-realtime-2">
+      <small>Nëse nuk punon, provo <code>gpt-realtime</code>.</small>
+    </label>
+
+    <div class="note">
+      Përkthimi bëhet nga OpenAI (Realtime API) dhe paguhet sipas minutave të përdorura nga llogaria jote.
+      Kur nuk përdoret, shtyp “Ndalo” që të mos harxhosh.
+    </div>
+
+    <button value="save">Ruaj</button>
+  </form>
+</dialog>
+
+<audio id="out" autoplay playsinline></audio>
+<script src="app.js"></script>
+</body>
+</html>
