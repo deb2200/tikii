@@ -68,3 +68,14 @@ Një aplikacion i dytë, i thjeshtë, te dosja `skaner/`: skanon pajisjet Blueto
 - **Android + Chrome:** për skanimin e vazhdueshëm ndiz një herë `chrome://flags/#enable-experimental-web-platform-features` → *Enabled*. Pa këtë, punon butoni “Zgjidh pajisje” (lista e Chrome + lexon baterinë/prodhuesin kur pajisja lejon).
 - **iPhone:** Safari nuk e lejon Bluetooth-in nga faqet; përdor aplikacionin falas **Bluefy**.
 - Ndiz Bluetooth-in dhe Vendndodhjen. Faqja duhet të jetë në `https://` (GitHub Pages e ka).
+
+## 🎧 Përkthyesi live – çdo gjuhë në shqip, në AirPods
+
+Aplikacioni i tretë, te dosja `perkthyes/`. Dëgjon me mikrofonin e iPhone-it, e njeh vetë gjuhën (anglisht, gjermanisht, italisht, turqisht, arabisht…) dhe ta thotë përkthimin **shqip me zë në AirPods**, si një përkthyes simultan. Në ekran shfaqet edhe teksti origjinal dhe përkthimi.
+
+- Hape në iPhone me Safari: `https://<emri-yt>.github.io/tikii/perkthyes/` → Share → *Add to Home Screen*.
+- Duhet një **çelës API i OpenAI** (platform.openai.com → API keys, me kredit te Billing). Vendose te ⚙️; ruhet vetëm në telefonin tënd. Paguhet sipas minutave të përdorura.
+- Përdor modelin `gpt-realtime-2` (zë-në-zë, pa hapa të ndërmjetëm, ~1 sekondë vonesë). Nëse nuk punon, te ⚙️ vendos `gpt-realtime`.
+- Te ⚙️ zgjedh shpejtësinë e reagimit (⚡ maksimale / 🚀 e shpejtë / 🎯 e saktë), zërin dhe shpejtësinë e të folurit.
+- Mikrofoni: aplikacioni zgjedh vetë mikrofonin e iPhone-it, që AirPods të mbeten vetëm për dëgjim (si *Live Listen*). Mbaje telefonin afër folësit.
+- Ekrani mbahet ndezur gjatë përkthimit: iOS e ndal mikrofonin e faqeve kur kyçet ekrani.
